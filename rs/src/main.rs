@@ -28,6 +28,6 @@ impl Default for User {
 mod tests {
     #[test]
     fn foo() {
-        assert_eq!(2 * 3, 5)
+        assert_eq!(2 * 3, 6)
     }
 }
