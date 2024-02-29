@@ -5,7 +5,7 @@ fn main() {
 }
 
 pub struct User {
-    id: usize
+    id: usize,
 }
 
 impl User {
