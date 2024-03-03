@@ -1,0 +1,25 @@
+name: Go Testcontainers
+
+on:
+  push:
+    paths:
+      - 'go/**'
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'go/**'
+
+defaults:
+  run:
+    working-directory: go
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: version
+        run: go version
+      - name: run
+        run: go run cmd/testcontainers/main.go
