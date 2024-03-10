@@ -21,12 +21,12 @@ jobs:
       - name: Read version
         run: |
           echo Version: "${VERSION}"
-      - name: Release
+      - name: Create Draft Release
         uses: softprops/action-gh-release@v2.0.1
         with:
           draft: true
           generate_release_notes: true
-          make_latest: true
+          make_latest: "true"
           files: |
             README.md
             ./rs/Cargo.toml
