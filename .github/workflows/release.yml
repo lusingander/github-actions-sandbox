@@ -28,6 +28,13 @@ jobs:
         run: rustup target add ${{ matrix.targets.target }}
       - name: Build
         run: cargo build --release --target ${{ matrix.targets.target }}
+      - name: test
+        run: |
+          pwd
+          ls -lah
+          ls -lah target
+          ls -lah target/${{ matrix.targets.target }}
+          ls -lah target/${{ matrix.targets.target }}/release
       - name: Archive
         run: tar -czf stu-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz target/${{ matrix.targets.target }}/release/stu
       - name: Upload artifact
@@ -44,6 +51,7 @@ jobs:
           - target: aarch64-apple-darwin
             os: macos-14
     runs-on: ${{ matrix.targets.os }}
+    needs: build
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
