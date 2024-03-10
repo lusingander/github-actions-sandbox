@@ -6,7 +6,9 @@ on:
       - 'v*'
 
 jobs:
-  build:
+  realease:
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
