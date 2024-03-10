@@ -35,7 +35,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: release
+          name: rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}
           path: rs/rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}.tar.gz
           if-no-files-found: error
   download:
@@ -54,7 +54,7 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: release
+          name: rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}
           path: rs/rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}.tar.gz
       - name: Test
         run: ls -lha
