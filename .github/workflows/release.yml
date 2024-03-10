@@ -47,8 +47,9 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: releases
-          path: release-*
+          path: releases
+          pattern: release-*
+          merge-multiple: true
       - name: Test
         run: |
           ls -lha
