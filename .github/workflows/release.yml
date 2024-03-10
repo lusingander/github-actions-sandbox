@@ -35,18 +35,11 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}
+          name: release-${{ matrix.targets.target }}
           path: rs/rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}.tar.gz
           if-no-files-found: error
   download:
-    strategy:
-      matrix:
-        targets:
-          - target: x86_64-apple-darwin
-            os: macos-14
-          - target: aarch64-apple-darwin
-            os: macos-14
-    runs-on: ${{ matrix.targets.os }}
+    runs-on: macos-14
     needs: build
     steps:
       - name: Set release version
@@ -54,12 +47,12 @@ jobs:
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
-          name: rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}
-          path: rs/rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}.tar.gz
+          name: releases
+          path: release-*
       - name: Test
-        run: ls -lha
-      - name: Print checksum
-        run: shasum -a 256 rs/rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}.tar.gz
+        run: |
+          ls -lha
+          ls -lha releases
   # release:
   #   permissions:
   #     contents: write
