@@ -1,0 +1,31 @@
+name: Release
+  
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Write release version
+        run: |
+          VERSION=${GITHUB_REF_NAME#v}
+          echo Version: "${VERSION}", GitHub Ref Name: "${GITHUB_REF_NAME}"
+          echo "VERSION=${VERSION}" >> ${GITHUB_ENV}
+      - name: Read version
+        run: |
+          echo Version: "${VERSION}"
+      - name: Release
+        uses: softprops/action-gh-release@v2.0.1
+        with:
+          draft: true
+          generate_release_notes: true
+          make_latest: true
+          files: |
+            README.md
+            ./rs/Cargo.toml
+            ./go/go.mod
