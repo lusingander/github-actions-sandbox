@@ -36,12 +36,12 @@ jobs:
           ls -lah target/${{ matrix.targets.target }}
           ls -lah target/${{ matrix.targets.target }}/release
       - name: Archive
-        run: tar -czf stu-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz target/${{ matrix.targets.target }}/release/stu
+        run: tar -czf rs-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz target/${{ matrix.targets.target }}/release/rs
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: release
-          path: stu-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz
+          path: rs-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz
   download:
     strategy:
       matrix:
@@ -57,9 +57,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: release
-          path: stu-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz
+          path: rs-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz
       - name: Print checksum
-        run: shasum -a 256 stu-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz
+        run: shasum -a 256 rs-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz
   # release:
   #   permissions:
   #     contents: write
