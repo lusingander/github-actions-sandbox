@@ -1,12 +1,9 @@
 name: Release
   
-# for debug
-on: push
-
-# on:
-#   push:
-#     tags:
-#       - 'v*'
+on:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   build:
@@ -38,11 +35,12 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: release-${{ matrix.targets.target }}
-          path: rs/rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}.tar.gz
+          path: rs/rs-${{ env.RELEASE_VERSION }}-${{ matrix.targets.target }}.tar.gz # working-directory 設定を見てくれないらしい...
           if-no-files-found: error
-  download:
-    runs-on: macos-14
-    needs: build
+  release:
+    permissions:
+      contents: write
+    runs-on: ubuntu-latest
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v4
@@ -50,33 +48,13 @@ jobs:
           path: releases
           pattern: release-*
           merge-multiple: true
-      - name: Test
-        run: |
-          ls -lha
-          ls -lha releases
-          shasum -a 256 releases/*
-  # release:
-  #   permissions:
-  #     contents: write
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Write release version
-  #       run: |
-  #         VERSION=${GITHUB_REF_NAME#v}
-  #         echo Version: "${VERSION}", GitHub Ref Name: "${GITHUB_REF_NAME}"
-  #         echo "VERSION=${VERSION}" >> ${GITHUB_ENV}
-  #     - name: Read version
-  #       run: |
-  #         echo Version: "${VERSION}"
-  #     - name: Create Draft Release
-  #       uses: softprops/action-gh-release@v2.0.1
-  #       with:
-  #         draft: true
-  #         generate_release_notes: true
-  #         make_latest: "true" # string...??
-  #         files: |
-  #           README.md
-  #           ./rs/Cargo.toml
-  #           ./go/go.mod
+      - name: Checksum
+        run: sha256sum releases/*
+      - name: Create Draft Release
+        uses: softprops/action-gh-release@v2.0.1
+        with:
+          draft: true
+          generate_release_notes: true
+          make_latest: true
+          files: |
+            releases/*
