@@ -1,33 +1,79 @@
 name: Release
   
-on:
-  push:
-    tags:
-      - 'v*'
+# for debug
+on: push
+
+# on:
+#   push:
+#     tags:
+#       - 'v*'
 
 jobs:
-  realease:
-    permissions:
-      contents: write
-    runs-on: ubuntu-latest
+  build:
+    strategy:
+      matrix:
+        targets:
+          - target: x86_64-apple-darwin
+            os: macos-14
+          - target: aarch64-apple-darwin
+            os: macos-14
+    defaults:
+      run:
+        working-directory: rs
+    runs-on: ${{ matrix.targets.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Write release version
-        run: |
-          VERSION=${GITHUB_REF_NAME#v}
-          echo Version: "${VERSION}", GitHub Ref Name: "${GITHUB_REF_NAME}"
-          echo "VERSION=${VERSION}" >> ${GITHUB_ENV}
-      - name: Read version
-        run: |
-          echo Version: "${VERSION}"
-      - name: Create Draft Release
-        uses: softprops/action-gh-release@v2.0.1
+      - name: Setup
+        run: rustup target add ${{ matrix.targets.target }}
+      - name: Build
+        run: cargo build --release --target ${{ matrix.targets.target }}
+      - name: Archive
+        run: tar -czf stu-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz target/${{ matrix.targets.target }}/release/stu
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          draft: true
-          generate_release_notes: true
-          make_latest: "true"
-          files: |
-            README.md
-            ./rs/Cargo.toml
-            ./go/go.mod
+          name: release
+          path: stu-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz
+  download:
+    strategy:
+      matrix:
+        targets:
+          - target: x86_64-apple-darwin
+            os: macos-14
+          - target: aarch64-apple-darwin
+            os: macos-14
+    runs-on: ${{ matrix.targets.os }}
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: stu-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz
+      - name: Print checksum
+        run: shasum -a 256 stu-${GITHUB_REF_NAME#v}-${{ matrix.targets.target }}.tar.gz
+  # release:
+  #   permissions:
+  #     contents: write
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     - name: Write release version
+  #       run: |
+  #         VERSION=${GITHUB_REF_NAME#v}
+  #         echo Version: "${VERSION}", GitHub Ref Name: "${GITHUB_REF_NAME}"
+  #         echo "VERSION=${VERSION}" >> ${GITHUB_ENV}
+  #     - name: Read version
+  #       run: |
+  #         echo Version: "${VERSION}"
+  #     - name: Create Draft Release
+  #       uses: softprops/action-gh-release@v2.0.1
+  #       with:
+  #         draft: true
+  #         generate_release_notes: true
+  #         make_latest: "true" # string...??
+  #         files: |
+  #           README.md
+  #           ./rs/Cargo.toml
+  #           ./go/go.mod
