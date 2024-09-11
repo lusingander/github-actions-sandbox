@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - mac-gui-test
+  workflow_dispatch:
 
 jobs:
   test:
@@ -15,7 +16,7 @@ jobs:
           brew install --cask iterm2
       - name: Open iTerm2
         run: |
-          osascript -e 'tell application "iTerm" to activate'
+          osascript -e 'tell application "iTerm.app" to activate'
           sleep 2
 
           osascript -e 'tell application "System Events" to keystroke "pwd"'
