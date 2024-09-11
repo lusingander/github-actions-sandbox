@@ -1,0 +1,27 @@
+name: Mac GUI
+
+on:
+  push:
+    branches:
+      - mac-gui-test
+
+jobs:
+  test:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: TextEdit
+        run: |
+          osascript -e 'tell application "TextEdit" to activate'
+          sleep 2
+
+          osascript -e 'tell application "System Events" to keystroke "Hello World"'
+          osascript -e 'tell application "System Events" to keystroke return'
+          sleep 2
+
+          screencapture -x screenshot.png
+      - name: Upload screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshot
+          path: screenshot.png
