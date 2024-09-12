@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - mac-gui-test
-  workflow_dispatch:
 
 jobs:
   test:
@@ -14,22 +13,21 @@ jobs:
       - name: install iTerm2
         run: |
           brew install --cask iterm2
-      - name: Run commands in iTerm2
+      - name: check iTerm2
         run: |
-          osascript <<EOF
-          tell application "com.googlecode.iterm2"
-              create window with default profile
-              tell current session of current window
-                  write text "echo Hello, World!"
-                  delay 2
-                  write text "ls -la"
-                  delay 2
-              end tell
-              delay 2
-              set screenshotPath to "screenshot.png"
-              do shell script "screencapture " & quoted form of screenshotPath
-          end tell
-          EOF
+          ls /Applications
+          ls ~/Applications
+      - name: Open iTerm2
+        run: |
+          osascript -e 'tell application "iTerm" to activate'
+          sleep 2
+
+          osascript -e 'tell application "System Events" to keystroke "pwd"'
+          osascript -e 'tell application "System Events" to keystroke return'
+          sleep 2
+      - name: Screenshot
+        run: |
+          screencapture -x screenshot.png
       - name: Upload screenshot
         uses: actions/upload-artifact@v4
         with:
