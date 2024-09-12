@@ -1,0 +1,38 @@
+name: WezTerm test
+
+on:
+  push:
+    branches:
+      - '*'
+
+jobs:
+  wezterm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install WezTerm
+        run: |
+          curl -fsSL https://apt.fury.io/wez/gpg.key | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+          echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *' | sudo tee /etc/apt/sources.list.d/wezterm.list
+          sudo apt update
+          sudo apt install wezterm
+      - name: Install Xvfb and screenshot tool
+        run: |
+          sudo apt-get install -y xvfb x11-apps scrot
+      - name: Start Xvfb
+        run: |
+          Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
+      - name: Launch WezTerm
+        run: |
+          wezterm start -- bash -c "echo 'Running WezTerm in GitHub Actions'"
+      - name: Take screenshot
+        run: |
+          sleep 5  # Give WezTerm some time to render
+          scrot /tmp/screenshot.png
+      - name: Upload screenshot as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: wezterm-screenshot
+          path: /tmp/screenshot.png
