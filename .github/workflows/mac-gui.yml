@@ -28,9 +28,12 @@ jobs:
           osascript -e 'tell application "System Events" to keystroke "ls -l"'
           osascript -e 'tell application "System Events" to keystroke return'
           sleep 1
+          
+          osascript -e 'tell application "/Applications/iTerm.app" to id of window 1'
+          sleep 1
       - name: Screenshot
         run: |
-          screencapture -l$(osascript -e 'tell app "/Applications/iTerm.app" to id of window 1') screenshot.png
+          screencapture -x screenshot.png
       - name: Upload screenshot
         uses: actions/upload-artifact@v4
         with:
