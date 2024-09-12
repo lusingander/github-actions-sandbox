@@ -17,7 +17,7 @@ jobs:
       - name: Run commands in iTerm2
         run: |
           osascript <<EOF
-          tell application "iTerm"
+          tell application "/Applications/iTerm.app"
               create window with default profile
               tell current session of current window
                   write text "echo Hello, World!"
