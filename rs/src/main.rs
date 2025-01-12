@@ -2,6 +2,8 @@ const APP_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn main() {
     println!("Hello, rs! [Version: {}]", APP_VERSION);
+    println!("Press any key to exit...");
+    std::io::stdin().read_line(&mut String::new()).unwrap();
 }
 
 pub struct User {
