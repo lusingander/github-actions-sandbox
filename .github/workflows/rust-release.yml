@@ -34,7 +34,7 @@ jobs:
       - name: Setup
         run: rustup target add ${{ matrix.targets.target }}
       - name: Install musl
-        if: ${{ endsWith(matrix.targets.target, "musl") }}
+        if: ${{ endsWith(matrix.targets.target, 'musl') }}
         run: sudo apt-get install -y musl-tools
       - name: Build
         run: cargo build --release --target ${{ matrix.targets.target }}
