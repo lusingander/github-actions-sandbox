@@ -1,11 +1,11 @@
 name: Deploy GitHub Pages
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - README.md
+  # push:
+  #   branches:
+  #     - master
+  #   paths:
+  #     - README.md
   workflow_dispatch:
 
 permissions:
