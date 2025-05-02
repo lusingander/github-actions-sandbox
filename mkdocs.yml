@@ -1,0 +1,13 @@
+site_name: GitHub Actions Sandbox
+repo_name: lusingander/github-actions-sandbox
+repo_url: https://github.com/lusingander/github-actions-sandbox
+site_dir: _site
+
+theme:
+  name: material
+  icon:
+    repo: fontawesome/brands/github
+
+nav:
+  - Home: index.md
+  - License: license.md
