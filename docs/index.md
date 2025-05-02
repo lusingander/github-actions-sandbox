@@ -2,6 +2,8 @@
 
 For full documentation visit [mkdocs.org](https://www.mkdocs.org).
 
+<img src="images/icon.jpeg" width=400>
+
 ## Commands
 
 * `mkdocs new [dir-name]` - Create a new project.
