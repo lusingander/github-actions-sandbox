@@ -1,0 +1,5 @@
+[book]
+authors = ["Kyosuke Fujimoto"]
+language = "en"
+src = "src"
+title = "test"
