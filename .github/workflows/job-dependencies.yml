@@ -39,7 +39,7 @@ jobs:
     needs:
       - job1
       - job2
-    if: ${{ inputs.job3 }}
+    if: ${{ !cancelled() && inputs.job3 }}
     steps:
       - name: Run Job 3
         run: echo "This is Job 3, which depends on Job 2"
