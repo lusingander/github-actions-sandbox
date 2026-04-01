@@ -18,6 +18,21 @@ on:
         type: boolean
         required: true
         default: true
+      job1-failure:
+        description: 'Fail Job 1'
+        type: boolean
+        required: true
+        default: false
+      job2-failure:
+        description: 'Fail Job 2'
+        type: boolean
+        required: true
+        default: false
+      job3-failure:
+        description: 'Fail Job 3'
+        type: boolean
+        required: true
+        default: false
 
 jobs:
   job1:
@@ -25,14 +40,24 @@ jobs:
     if: ${{ inputs.job1 }}
     steps:
       - name: Run Job 1
-        run: echo "This is Job 1"
+        run: |
+          echo "This is Job 1"
+          if [ "${{ inputs.job1-failure }}" = "true" ]; then
+            echo "Failing Job 1 as requested"
+            exit 1
+          fi
 
   job2:
     runs-on: ubuntu-latest
     if: ${{ inputs.job2 }}
     steps:
       - name: Run Job 2
-        run: echo "This is Job 2, which depends on Job 1"
+        run: |
+          echo "This is Job 2"
+          if [ "${{ inputs.job2-failure }}" = "true" ]; then
+            echo "Failing Job 2 as requested"
+            exit 1
+          fi
 
   job3:
     runs-on: ubuntu-latest
@@ -42,7 +67,12 @@ jobs:
     if: ${{ !cancelled() && inputs.job3 }}
     steps:
       - name: Run Job 3
-        run: echo "This is Job 3, which depends on Job 2"
+        run: |
+          echo "This is Job 3"
+          if [ "${{ inputs.job3-failure }}" = "true" ]; then
+            echo "Failing Job 3 as requested"
+            exit 1
+          fi 
   
   debug:
     runs-on: ubuntu-latest
@@ -54,6 +84,6 @@ jobs:
     steps:
       - name: Debug Job
         run: |
-          echo "Job 1 status: ${{ needs.job1.result }}"
-          echo "Job 2 status: ${{ needs.job2.result }}"
-          echo "Job 3 status: ${{ needs.job3.result }}"
+          echo "Job 1: Run = ${{ inputs.job1 }}, Failure = ${{ inputs.job1-failure }}, Status = ${{ needs.job1.result }}"
+          echo "Job 2: Run = ${{ inputs.job2 }}, Failure = ${{ inputs.job2-failure }}, Status = ${{ needs.job2.result }}"
+          echo "Job 3: Run = ${{ inputs.job3 }}, Failure = ${{ inputs.job3-failure }}, Status = ${{ needs.job3.result }}"
