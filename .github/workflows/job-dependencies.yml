@@ -64,7 +64,7 @@ jobs:
     needs:
       - job1
       - job2
-    if: ${{ always() }} && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && inputs.job3
+    if: ${{ always() && !contains(needs.*.result, 'failure') && !contains(needs.*.result, 'cancelled') && inputs.job3 }}
     steps:
       - name: Run Job 3
         run: |
